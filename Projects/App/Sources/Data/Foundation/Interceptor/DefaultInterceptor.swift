@@ -1,8 +1,6 @@
 import Alamofire
 import Foundation
 
-//struct
-
 fileprivate let authService = AuthService.live
 fileprivate let authCache = AuthCache.live
 
@@ -42,8 +40,7 @@ class DefaultInterceptor: RequestInterceptor {
                 authCache.saveToken(response.data.accessToken, to: .accessToken)
                 completion(.retry)
             } catch {
-                print("-- lost session --")
-                completion(.doNotRetryWithError(error))
+                completion(.doNotRetryWithError(AuthError.refreshFailure))
             }
         }
     }

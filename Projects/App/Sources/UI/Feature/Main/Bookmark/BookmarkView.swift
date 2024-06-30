@@ -12,6 +12,7 @@ import SwiftUI
 struct BookmarkView: View {
     
     @StateObject var vm: BookmarkViewModel
+    @EnvironmentObject var tm: TokenManager
     
     @State private var scrollViewOffset: CGFloat = 0 {
         didSet {
@@ -108,6 +109,12 @@ struct BookmarkView: View {
         .task {
             vm.flow = .fetching
             await vm.fetchNotifications(isNew: true)
+        }
+        .onChange(of: vm.refreshFailure) {
+            if $0 {
+                tm.accessToken = ""
+                tm.refreshToken = ""
+            }
         }
     }
 }

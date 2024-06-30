@@ -12,6 +12,7 @@ import SwiftUI
 struct HomeView: View {
     
     @ObservedObject var vm: HomeViewModel
+    @EnvironmentObject var tm: TokenManager
     @State var reader: ScrollViewProxy?
     
     @State private var scrollViewOffset: CGFloat = 0 {
@@ -135,6 +136,12 @@ struct HomeView: View {
                 await vm.fetchCategoryList()
                 await vm.fetchLoudSpeaker()
                 await vm.fetchNotifications(isNew: true)
+            }
+        }
+        .onChange(of: vm.refreshFailure) {
+            if $0 {
+                tm.accessToken = ""
+                tm.refreshToken = ""
             }
         }
     }

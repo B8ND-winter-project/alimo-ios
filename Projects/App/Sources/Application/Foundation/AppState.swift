@@ -12,13 +12,18 @@ final class AppState: ObservableObject {
             }
         }
     }
+    @Published var refreshFailure = false
     
     @MainActor
     func fetchMember() {
         Task {
-            member = try await MemberService.live.getMemberInfo()
-            guard let member else { return }
-            isAlarmOn = !member.isOffAlarm
+            do {
+                member = try await MemberService.live.getMemberInfo()
+                guard let member else { return }
+                isAlarmOn = !member.isOffAlarm
+            } catch AuthError.refreshFailure {
+                refreshFailure = true
+            } catch {}
         }
     }
     

@@ -26,6 +26,7 @@ class BookmarkViewModel: ObservableObject {
         case failure
     }
     @Published var flow: FetchFlow = .fetching
+    @Published var refreshFailure = false
     
     func fetchNotifications(isNew: Bool) async {
         flow = .fetching
@@ -46,6 +47,8 @@ class BookmarkViewModel: ObservableObject {
                 page = nextPage
             }
             flow = .success
+        } catch AuthError.refreshFailure {
+            refreshFailure = true
         } catch {
             notificationList = []
             page = 1

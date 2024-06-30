@@ -16,6 +16,7 @@ struct MainView: View {
     @StateObject private var homeVM = HomeViewModel()
     @StateObject private var bookmarkVM = BookmarkViewModel()
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var tm: TokenManager
     
     var body: some View {
         NavigationStack {
@@ -43,6 +44,13 @@ struct MainView: View {
         .onAppear {
             endTextEditing()
             appState.fetchMember()
+        }
+        .onChange(of: appState.refreshFailure) {
+            if $0 {
+                tm.accessToken = ""
+                tm.refreshToken = ""
+                appState.refreshFailure = false
+            }
         }
     }
 }

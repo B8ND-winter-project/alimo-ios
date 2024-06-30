@@ -23,7 +23,7 @@ class HomeViewModel: ObservableObject {
     @Published var loudSpeaker: LoudSpeaker? = nil
     @Published var notificationList: [Notification] = []
     @Published var page = 1
-    
+    @Published var refreshFailure = false
     @Published var selectedIndex = -1 {
         didSet {
             Task {
@@ -78,6 +78,8 @@ class HomeViewModel: ObservableObject {
                 page = nextPage
             }
             flow = .success
+        } catch AuthError.refreshFailure {
+            refreshFailure = true
         } catch {
             notificationList = []
             page = 1
